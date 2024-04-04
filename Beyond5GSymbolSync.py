@@ -20,3 +20,12 @@ bitstream = fid[0]
 bitstreamLen = len(bitstream)
 #--------------------------------------------------------------------------
 
+# Function to find optimal Accuracy Threshold
+def preambleBitstreamOptim():
+    print('Hello World')
+
+# Function to find and report Data
+def findData():
+    print('Data')
+    
+# Function to flip a certain percentage of the bits
