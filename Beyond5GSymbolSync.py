@@ -1,12 +1,22 @@
 import numpy as np
 
 # Expected Preamble
+#WLAN = Enter WLAN preamble here
+Ethernet = '10101010101010101010101010101010101010101010101010101010'
+
+# Preamble Manipulation
+preamble = Ethernet
+preLength = len(preamble)
+
+#-------------------------------------------------------------------------
 
 # File IO
-file = input('Enter file name: ')
+bitstreamFile = input('Enter file name: ')
 
-with open(file, 'r') as fid:
+with open(bitstreamFile, 'r') as fid:
     fid = fid.readlines()
-    print(fid)
 
+bitstream = fid[0]
+bitstreamLen = len(bitstream)
+#--------------------------------------------------------------------------
 
