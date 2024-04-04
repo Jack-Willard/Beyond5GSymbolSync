@@ -1,3 +1,12 @@
-#Love you
+import numpy as np
 
-print('Hello world')
+# Expected Preamble
+
+# File IO
+file = input('Enter file name: ')
+
+with open(file, 'r') as fid:
+    fid = fid.readlines()
+    print(fid)
+
+
