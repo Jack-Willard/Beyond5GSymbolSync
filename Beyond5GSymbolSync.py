@@ -3,11 +3,11 @@ import random as r
 import math as m
 
 # Expected Preamble
-#WLAN = Enter WLAN preamble here
+WLAN = '01111110111011001110100010100100111110011001010110001100001001011110101010000010110101110010001110000000111100010000110100110110'
 Ethernet = '10101010101010101010101010101010101010101010101010101010'
 
 # Preamble Manipulation
-preamble = Ethernet
+preamble = WLAN
 preLength = len(preamble)
 Percent = int(input('Enter Desired Percentage of Bits Flipped (0 - 100): '))
 
@@ -64,5 +64,7 @@ def findData(bits, pre):
 
 #Testing Section
 
-newBits = preInsert(bitstream, bitstreamLen, preamble)   # Places the preamble in the bitstream
-newBits2 = bitFlip(newBits, len(newBits), Percent)
+# newBits = preInsert(bitstream, bitstreamLen, preamble)   # Places the preamble in the bitstream
+# newBits2 = bitFlip(newBits, len(newBits), Percent)
+
+print(len(WLAN))
