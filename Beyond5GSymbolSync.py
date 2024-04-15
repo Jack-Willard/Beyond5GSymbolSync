@@ -57,14 +57,48 @@ def preambleBitstreamOptim(bits, pre):
     print('Pre')
 
 # Function to find and report Data for Troy
-def findData(bits, pre):
-    print('Data')
+def findData(bits, pre, threshold):
+    thresholdMet = False
+    stream = []
+    for bit in bits:
+        stream += [int(bit)]
+    
+    preamble = []
+    for bit in pre:
+        preamble += [int(bit)]
+
+    frame = stream[:preLength]
+    frame = np.array(frame)
+    preamble = np.array(preamble)
+
+    nextIndex = preLength
+    score = 100
+    while(nextIndex < bitstreamLen):
+        frame = np.delete(frame, 0)
+        frame = np.append(frame, stream[nextIndex])
+        differenceArr = np.abs(frame - preamble)
+        print(differenceArr)
+        score = np.sum(differenceArr) * 100 / preLength
+        nextIndex += 1
+        if(score <= threshold):
+            thresholdMet = True
+            break            
+
+    if(thresholdMet):
+        return bits[nextIndex:]
+
+    return -1   
 
 #-------------------------------------------------------------------------------------------------------------
 
 #Testing Section
 
-# newBits = preInsert(bitstream, bitstreamLen, preamble)   # Places the preamble in the bitstream
-# newBits2 = bitFlip(newBits, len(newBits), Percent)
+newBits = preInsert(bitstream, bitstreamLen, preamble)   # Places the preamble in the bitstream
+newBits = bitFlip(newBits, len(newBits), Percent)
 
-print(len(WLAN))
+result = findData(newBits, preamble, 10)
+
+print(newBits)
+
+print("result:")
+print(result)
