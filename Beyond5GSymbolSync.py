@@ -2,6 +2,7 @@ import numpy as np
 import random as r
 import math as m
 
+
 # Expected Preamble
 WLAN = '01111110111011001110100010100100111110011001010110001100001001011110101010000010110101110010001110000000111100010000110100110110'
 Ethernet = '10101010101010101010101010101010101010101010101010101010'
@@ -9,7 +10,6 @@ Ethernet = '10101010101010101010101010101010101010101010101010101010'
 # Preamble Manipulation
 preamble = WLAN
 preLength = len(preamble)
-Percent = int(input('Enter Desired Percentage of Bits Flipped (0 - 100): '))
 
 #-------------------------------------------------------------------------
 
@@ -77,7 +77,7 @@ def findData(bits, pre, threshold):
         frame = np.delete(frame, 0)
         frame = np.append(frame, stream[nextIndex])
         differenceArr = np.abs(frame - preamble)
-        print(differenceArr)
+        #print(differenceArr)
         score = np.sum(differenceArr) * 100 / preLength
         nextIndex += 1
         if(score <= threshold):
@@ -87,18 +87,33 @@ def findData(bits, pre, threshold):
     if(thresholdMet):
         return bits[nextIndex:]
 
-    return -1   
+    return ("Threshold not met")   
 
 #-------------------------------------------------------------------------------------------------------------
 
 #Testing Section
 
-newBits = preInsert(bitstream, bitstreamLen, preamble)   # Places the preamble in the bitstream
-newBits = bitFlip(newBits, len(newBits), Percent)
+print("1. Locating the Preamble on a given Accuracy Threshold \n2. Exploring the relationship between Bits Flipped and accuracy at a given threshold")
+Decision = input("Enter the number corresponding to the desired function you want this program to run: ")
 
-result = findData(newBits, preamble, 10)
+if (Decision == '1'):
+    Percent = int(input('Enter Desired Percentage of Bits Flipped (0 - 100): '))
+    newBits1 = preInsert(bitstream, bitstreamLen, preamble)   # Places the preamble in the bitstream
+    newBits2 = bitFlip(newBits1, len(newBits1), Percent)
+    threshold = input("Enter the Desired Accuracy Threshold (0-100): ")
+    print("The following is the bitstream with the preamble inserted")
+    print(newBits2)
+    print("The following result is the outcome of the simulation:")
+    result = findData(newBits2, preamble, int(threshold))
+    print(result)
 
-print(newBits)
+elif (Decision == '2'):
+    threshold = input("Enter the Desired Accuracy Threshold (0-100): ")
+    
 
-print("result:")
-print(result)
+else:
+    print("Decision selected was not one of the options")
+
+
+
+
