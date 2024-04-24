@@ -6,6 +6,8 @@ import math as m
 # Expected Preamble
 WLAN = '01111110111011001110100010100100111110011001010110001100001001011110101010000010110101110010001110000000111100010000110100110110'
 Ethernet = '10101010101010101010101010101010101010101010101010101010'
+Fibonacci = '101100011111000000001111111111111000000000000000000000111111111111111111111111111111111100000000000000000000000000000000000000'
+#Alternating = 
 
 # Preamble Manipulation
 preamble = WLAN
@@ -93,14 +95,14 @@ def findData(bits, pre, threshold):
 
 #Testing Section
 
-print("1. Locating the Preamble on a given Accuracy Threshold \n2. Exploring the relationship between Bits Flipped and accuracy at a given threshold")
+print("1. Locating the Preamble on a given Inaccuracy Threshold \n2. Exploring the relationship between Bits Flipped and accuracy at a given threshold")
 Decision = input("Enter the number corresponding to the desired function you want this program to run: ")
 
 if (Decision == '1'):
     Percent = int(input('Enter Desired Percentage of Bits Flipped (0 - 100): '))
     newBits1 = preInsert(bitstream, bitstreamLen, preamble)   # Places the preamble in the bitstream
     newBits2 = bitFlip(newBits1, len(newBits1), Percent)
-    threshold = input("Enter the Desired Accuracy Threshold (0-100): ")
+    threshold = input("Enter the Desired Inaccuracy Threshold (0-100): ")
     print("The following is the bitstream with the preamble inserted")
     print(newBits2)
     print("The following result is the outcome of the simulation:")
