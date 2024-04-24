@@ -100,21 +100,15 @@ def findData(bits, pre, threshold, expected):
 
 #Testing Section
 
-print("1. Locating the Preamble on a given Inaccuracy Threshold \n2. Exploring the relationship between Bits Flipped and accuracy at a given threshold")
+print("1. Locating the Preamble on a given Accuracy Threshold \n2. Exploring the relationship between Bits Flipped and accuracy at a given threshold")
 Decision = input("Enter the number corresponding to the desired function you want this program to run: ")
 
 if (Decision == '1'):
     Percent = int(input('Enter Desired Percentage of Bits Flipped (0 - 100): '))
-<<<<<<< HEAD
-    newBits1 = preInsert(bitstream, bitstreamLen, preamble)   # Places the preamble in the bitstream
-    newBits2 = bitFlip(newBits1, len(newBits1), Percent)
-    threshold = input("Enter the Desired Inaccuracy Threshold (0-100): ")
-=======
     newBits, index = preInsert(bitstream, bitstreamLen, preamble)   # Places the preamble in the bitstream
     newBits = bitFlip(newBits, len(newBits), Percent)
     threshold = int(input("Enter the Desired Accuracy Threshold (0-100): "))
     inaccThreshold = 100 - threshold
->>>>>>> 92c655fe7778460bd92b48f478d190a3f991c6cc
     print("The following is the bitstream with the preamble inserted")
     print(newBits)
     print("The following result is the outcome of the simulation:")
