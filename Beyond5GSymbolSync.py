@@ -3,7 +3,7 @@ import random as r
 import math as m
 import matplotlib.pyplot as plt
 
-# Expected Preamble
+# Expected Synchronization Bit Stream 
 WLAN = '01111110111011001110100010100100111110011001010110001100001001011110101010000010110101110010001110000000111100010000110100110110'
 Ethernet = '10101010101010101010101010101010101010101010101010101010'
 Fibonacci = '101100011111000000001111111111111000000000000000000000111111111111111111111111111111111100000000000000000000000000000000000000'
@@ -15,17 +15,26 @@ preLength = len(preamble)
 
 #-------------------------------------------------------------------------
 
-# File IO
+# File IO, Accepts Text File Name and reads the lines of the file
 bitstreamFile = input('Enter file name: ')
 with open(bitstreamFile, 'r') as fid:
     fid = fid.readlines()
+
+# Sets the read lines to a variable
 bitstream = fid[0]
+
+# Measures the length of the bitstream and reports it's length
 bitstreamLen = len(bitstream)
+
 #--------------------------------------------------------------------------
+
 # Inserts the preamble somwhere randomly into the bitstream
 def preInsert(bits, bitLen, pre):
     idx = r.randint(1, (bitLen - 2))
     return(bits[0:idx] + pre + bits[(idx):(bitLen)], idx)
+
+#---------------------------------------------------------------------------
+
 # Function to flip a certain percentage of the bits by subtracting each element by 1
 # and changing the -1 indexes to 0
 # 'bits' is the bitstream with the preamble inserted, 'percent' is the percent of bits to be flipped
@@ -42,25 +51,36 @@ def bitFlip(bits, bitLen, percent):
         bits[bit] = str(x)
     bits = "".join(element for element in bits)
     return(bits)
-# Function to find optimal Accuracy Threshold
-# 'bits' is the bitstream with the preamble inserted, 'pre' is the expected preamble
-def preambleBitstreamOptim(bits, pre):
-    print('Pre')
-# Function to find and report Data for Troy
+
+#-------------------------------------------------------------------------
+
+# Finds the Synchronization part of the preamble after it is hidden bits are flipped in the bitstream
 def findData(bits, pre, threshold, expected):
     thresholdMet = False
     stream = []
+
+# Creates an array of the bitstream  
     for bit in bits:
         stream += [int(bit)]
-    
+
     preamble = []
+
+# Create an array of the preamble synchronization bitstream
     for bit in pre:
         preamble += [int(bit)]
+
+# Sets the frame size to the length of the preamble
     frame = stream[:preLength]
     frame = np.array(frame)
     preamble = np.array(preamble)
+
+# Sets the next index to the preamble length
     nextIndex = preLength
+
+# Sets initial accuracy score to 100
     score = 100
+
+# While frame is moved through the bitstream with the preamble inserted the differences are evaluated 
     while(nextIndex < bitstreamLen + preLength):
         frame = np.delete(frame, 0)
         frame = np.append(frame, stream[nextIndex])
@@ -68,18 +88,30 @@ def findData(bits, pre, threshold, expected):
         #print(differenceArr)
         score = np.sum(differenceArr) * 100 / preLength
         nextIndex += 1
+
+# If threshold is met the loop will break because the preamble is found
         if(score <= threshold):
             thresholdMet = True
-            break            
+            break   
+
+# If the index found is equal to the index of where the preamble was actually placed a 1 is returned       
     result = bits[nextIndex:]
     if(thresholdMet):
         if(result == expected):
             return 1
+
+# If the index found was not the index of where the preamble was actually placed a -1 is returned
     return -1   
 #-------------------------------------------------------------------------------------------------------------
+
 #Testing Section
+
+# Establishes a prompt to either plot a graph of accuracy vs noise or the bits after the preamble 
 print("1. Locating the Preamble on a given Accuracy Threshold \n2. Exploring the relationship between Bits Flipped and accuracy at a given threshold")
 Decision = input("Enter the number corresponding to the desired function you want this program to run: ")
+
+# If decision is 1 prompts the user to input percentage of bits flipped, a threshold for accuracy and prints the bitstream with the preamble inserted
+# Next the outcome is printed with the bits after the preamble if "found"
 if (Decision == '1'):
     Percent = int(input('Enter Desired Percentage of Bits Flipped (0 - 100): '))
     newBits, index = preInsert(bitstream, bitstreamLen, preamble)   # Places the preamble in the bitstream
@@ -96,6 +128,9 @@ if (Decision == '1'):
         print(expected)
     else:
         print("Unsuccessful, output not found correctly")
+
+# If decision is 2, prompts the user to enter a desired accuracy threshold and ranges the noise from 15 percent on either side of the innaccuracy threshold equivalent
+# The accuracy after repeated random simulations is then graphed
 elif (Decision == '2'):
     threshold = int(input("Enter the Desired Accuracy Threshold (0-100): "))
     x = []
@@ -111,7 +146,7 @@ elif (Decision == '2'):
     for noise in range(lowerBound, upperBound):
         x.append(noise)
         numCorrect = 0
-        for i in range(1000):
+        for i in range(250):
             newBits, index = preInsert(bitstream, bitstreamLen, preamble)   # Places the preamble in the bitstream
             newBits = bitFlip(newBits, len(newBits), noise)
             expected = newBits[(index + preLength):]
@@ -126,5 +161,6 @@ elif (Decision == '2'):
     plt.title('Correct Results vs. Noise Level')
     plt.show()
     
+# If value entered for decision is neither 1 nor 2 then the following prompt is returned
 else:
     print("Decision selected was not one of the options")
