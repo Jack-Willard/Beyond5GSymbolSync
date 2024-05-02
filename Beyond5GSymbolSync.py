@@ -107,7 +107,7 @@ def findData(bits, pre, threshold, expected):
 #Testing Section
 
 # Establishes a prompt to either plot a graph of accuracy vs noise or the bits after the preamble 
-print("1. Locating the Preamble on a given Accuracy Threshold \n2. Exploring the relationship between Bits Flipped and accuracy at a given threshold")
+print("1. Locating the Preamble on a given Accuracy Threshold \n2. Exploring the relationship between Bits Flipped and accuracy at a given threshold\n3. Exploring the relationshiip between Bits Flipped and accuracy at four given thresholds")
 Decision = input("Enter the number corresponding to the desired function you want this program to run: ")
 
 # If decision is 1 prompts the user to input percentage of bits flipped, a threshold for accuracy and prints the bitstream with the preamble inserted
@@ -161,6 +161,79 @@ elif (Decision == '2'):
     plt.title('Correct Results vs. Noise Level')
     plt.show()
     
-# If value entered for decision is neither 1 nor 2 then the following prompt is returned
+# If value entered for decision is 3 then the following prompt is returned
+elif (Decision == '3'):
+    threshold1 = int(input("Enter the Desired Accuracy Threshold 1 (0-100): "))
+    threshold2 = int(input("Enter the Desired Accuracy Threshold 2 (0-100): "))
+    threshold3 = int(input("Enter the Desired Accuracy Threshold 3 (0-100): "))
+    threshold4 = int(input("Enter the Desired Accuracy Threshold 4 (0-100): "))
+
+    x = []
+    y1 = []
+    y2 = []
+    y3 = []
+    y4 = []
+
+    inaccThreshold1 = 100 - threshold1
+    inaccThreshold2 = 100 - threshold2
+    inaccThreshold3 = 100 - threshold3
+    inaccThreshold4 = 100 - threshold4 
+
+    upperBound = 100
+    lowerBound = 0
+
+    inaccThresholdlist = [inaccThreshold1, inaccThreshold2, inaccThreshold3, inaccThreshold4]
+    list.sort(inaccThresholdlist)
+
+    if inaccThresholdlist[0] - 15 > 0:
+        lowerBound = inaccThresholdlist[0] - 15
+    if inaccThresholdlist[2] + 16 < 100:
+        upperBound = inaccThresholdlist[3] + 16
+        
+    for noise in range(lowerBound, upperBound):
+        x.append(noise)
+        numCorrect1 = 0
+        numCorrect2 = 0
+        numCorrect3 = 0
+        numCorrect4 = 0
+
+        for i in range(1000):
+            newBits, index = preInsert(bitstream, bitstreamLen, preamble)   # Places the preamble in the bitstream
+            newBits = bitFlip(newBits, len(newBits), noise)
+            expected = newBits[(index + preLength):]
+            if(findData(newBits, preamble, inaccThresholdlist[0], expected) == 1):
+                numCorrect1 += 1
+            if(findData(newBits, preamble, inaccThresholdlist[1], expected) == 1):
+                numCorrect2 += 1
+            if(findData(newBits, preamble, inaccThresholdlist[2], expected) == 1):
+                numCorrect3 += 1
+            if(findData(newBits, preamble, inaccThresholdlist[3], expected) == 1):
+                numCorrect4 += 1
+
+        y1.append(numCorrect1)
+        y2.append(numCorrect2)
+        y3.append(numCorrect3)
+        y4.append(numCorrect4)
+        print("Num Correct 1:")
+        print(numCorrect1)
+        print("Num Correct 2:")
+        print(numCorrect2)
+        print("Num Correct 3:")
+        print(numCorrect3)
+        print("Num Correct 4:")
+        print(numCorrect4)
+        
+
+    plt.plot(x, y1)
+    plt.plot(x, y2)
+    plt.plot(x, y3)
+    plt.plot(x, y4)
+    plt.xlabel('Noise Level')
+    plt.ylabel('Number of Correct Results')
+    plt.title('Correct Results vs. Noise Level')
+    plt.legend([str(100 - inaccThresholdlist[0]) + '% Threshold', str(100 - inaccThresholdlist[1]) + '% Threshold', str(100 - inaccThresholdlist[2]) + '% Threshold', str(100 - inaccThresholdlist[3]) + '% Threshold'])
+    plt.show()
+
+# If value entered for decision is neither 1, 2, nor 3 then the following prompt is returned
 else:
     print("Decision selected was not one of the options")
