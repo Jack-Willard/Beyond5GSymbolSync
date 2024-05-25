@@ -92,22 +92,27 @@ def findData(bits, pre, threshold, expected):
 # If threshold is met the loop will break because the preamble is found
         if(score <= threshold):
             thresholdMet = True
-            break   
+            break 
 
 # If the index found is equal to the index of where the preamble was actually placed a 1 is returned       
     result = bits[nextIndex:]
     if(thresholdMet):
         if(result == expected):
             return 1
+        else:
+            return 2
 
-# If the index found was not the index of where the preamble was actually placed a -1 is returned
-    return -1   
+# If the index found was not the index of where the preamble was actually placed a 2 is returned
+    else:
+        return 0
+
+
 #-------------------------------------------------------------------------------------------------------------
 
 #Testing Section
 
 # Establishes a prompt to either plot a graph of accuracy vs noise or the bits after the preamble 
-print("1. Locating the Preamble on a given Accuracy Threshold \n2. Exploring the relationship between Bits Flipped and accuracy at a given threshold\n3. Exploring the relationshiip between Bits Flipped and accuracy at four given thresholds")
+print("1. Locating the Preamble on a given Accuracy Threshold \n2. Exploring the relationship between Bits Flipped and accuracy at a given threshold\n3. Exploring the relationshiip between Bits Flipped and accuracy at four given thresholds \n4. Exploring the false positives and false negative cases at a given noise level")
 Decision = input("Enter the number corresponding to the desired function you want this program to run: ")
 
 # If decision is 1 prompts the user to input percentage of bits flipped, a threshold for accuracy and prints the bitstream with the preamble inserted
@@ -234,6 +239,46 @@ elif (Decision == '3'):
     plt.legend([str(100 - inaccThresholdlist[0]) + '% Threshold', str(100 - inaccThresholdlist[1]) + '% Threshold', str(100 - inaccThresholdlist[2]) + '% Threshold', str(100 - inaccThresholdlist[3]) + '% Threshold'])
     plt.show()
 
-# If value entered for decision is neither 1, 2, nor 3 then the following prompt is returned
+elif (Decision == '4'):
+    Percent = int(input('Enter Desired Percentage of Bits Flipped (0 - 100): '))
+    x = []
+    fnegy = []
+    fposy = []
+    numCy = []
+
+    for threshold in range(60, 100):
+        x.append(threshold)
+        fpos = 0
+        fneg = 0
+        numCorrect = 0 
+        for i in range (250):
+            newBits, index = preInsert(bitstream, bitstreamLen, preamble)   # Places the preamble in the bitstream
+            newBits = bitFlip(newBits, len(newBits), Percent)
+            expected = newBits[(index + preLength):]
+            returnVal = findData(newBits, preamble, 100 - threshold, expected)
+            if(returnVal == 2):
+                fpos += 1
+            elif (returnVal == 0):
+                fneg += 1
+            elif (returnVal == 1):
+                numCorrect += 1
+            else:
+                numCorrect = numCorrect
+    
+        numCy.append(numCorrect)
+        fposy.append(fpos)
+        fnegy.append(fneg)
+        print("Num Correct:" + str(numCorrect) + "\nNum False Pos:" + str(fpos) + "\nNum False neg:" + str(fneg))
+        
+    plt.plot(x, numCy)
+    plt.plot(x, fposy)
+    plt.plot(x, fnegy)
+    plt.xlabel('Accuracy Thresholad')
+    plt.ylabel('Results')
+    plt.title('Results vs. Accuracy Threshold')
+    plt.legend(["Number Correct", "False Positives", "False Negatives"])
+    plt.show()
+
+# If value entered for decision is neither 1, 2, 3, nor 4 then the following prompt is returned
 else:
     print("Decision selected was not one of the options")
