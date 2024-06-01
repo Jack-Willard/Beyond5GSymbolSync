@@ -1,5 +1,11 @@
-Beyond 5G Symbol Sync
-
+Beyond 5G Symbol Sync:
+This code was meant to explore the operation of symbol synchronization. While the code is not optimized, this was not the point of the project. This code serves four purposes. 
+1. Locating the Preamble on a given Accuracy Threshold
+2. Exploring the relationship between Bits Flipped and accuracy at a given threshold
+3. Exploring the relationshiip between Bits Flipped and accuracy at four given thresholds
+4. Exploring the false positives and false negative cases at a given noise level
+These are all functions of the code and can operate on various predefined preambles including the current synchronization part of the WLAN 802.11 preamble. The code to determine the synchronization portion of the
+802.11 WLAN preamble is given below and was developed in MATLAB. 
 
 Matlab Code to Develop 802.11 Preamble (128 bits)
 
@@ -31,6 +37,3 @@ for c = 0:127
     x2 = x1;
     x1 = B;
 end
-
-
-preamble
