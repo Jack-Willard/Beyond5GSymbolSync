@@ -120,14 +120,16 @@ Decision = input("Enter the number corresponding to the desired function you wan
 if (Decision == '1'):
     Percent = int(input('Enter Desired Percentage of Bits Flipped (0 - 100): '))
     newBits, index = preInsert(bitstream, bitstreamLen, preamble)   # Places the preamble in the bitstream
-    newBits = bitFlip(newBits, len(newBits), Percent)
-    threshold = int(input("Enter the Desired Accuracy Threshold (0-100): "))
-    inaccThreshold = 100 - threshold
-    print("The following is the bitstream with the preamble inserted")
+    newBits = bitFlip(newBits, len(newBits), Percent) # Flips Bits
+    threshold = int(input("Enter the Desired Accuracy Threshold (0-100): ")) # Prompts the user to enter desired accuracy threshold
+    inaccThreshold = 100 - threshold # Calculates innacuracy threshold
+    print("The following is the bitstream with the preamble inserted")  
     print(newBits)
     print("The following result is the outcome of the simulation:")
-    expected = newBits[(index + preLength):]
-    result = findData(newBits, preamble, inaccThreshold, expected)
+    expected = newBits[(index + preLength):] # Finds expected location of preamble
+    result = findData(newBits, preamble, inaccThreshold, expected) # Determines whether preamble found correctly
+    
+    # Prints whether preamble found correctly
     if(result == 1):
         print("Successful\nResult-")
         print(expected)
@@ -137,29 +139,34 @@ if (Decision == '1'):
 # If decision is 2, prompts the user to enter a desired accuracy threshold and ranges the noise from 15 percent on either side of the innaccuracy threshold equivalent
 # The accuracy after repeated random simulations is then graphed
 elif (Decision == '2'):
-    threshold = int(input("Enter the Desired Accuracy Threshold (0-100): "))
+    threshold = int(input("Enter the Desired Accuracy Threshold (0-100): "))  # Prompts the user to enter desired accuracy threshold
     x = []
     y = []
-    inaccThreshold = 100 - threshold
-    upperBound = 100
+    inaccThreshold = 100 - threshold # Calculates innacuracy threshold
+    upperBound = 100 
     lowerBound = 0
+
+    # Calculates accuracy bounds for the simulation
     if inaccThreshold - 15 > 0:
         lowerBound = inaccThreshold - 15
     if inaccThreshold + 16 < 100:
         upperBound = inaccThreshold + 16
-        
+    
+    # Calculates the number of correct preamble locations for each noise level at a certain accuracy threshold
     for noise in range(lowerBound, upperBound):
         x.append(noise)
         numCorrect = 0
         for i in range(250):
-            newBits, index = preInsert(bitstream, bitstreamLen, preamble)   # Places the preamble in the bitstream
-            newBits = bitFlip(newBits, len(newBits), noise)
-            expected = newBits[(index + preLength):]
-            if(findData(newBits, preamble, inaccThreshold, expected) == 1):
+            newBits, index = preInsert(bitstream, bitstreamLen, preamble) # Places the preamble in the bitstream
+            newBits = bitFlip(newBits, len(newBits), noise) # Flips Bits
+            expected = newBits[(index + preLength):] # Finds expected location of preamble
+            if(findData(newBits, preamble, inaccThreshold, expected) == 1): 
                 numCorrect += 1
         y.append(numCorrect)
         print("Num Correct:")
         print(numCorrect)
+    
+    # Plots the collected data
     plt.plot(x, y)
     plt.xlabel('Noise Level')
     plt.ylabel('Number of Correct Results')
@@ -168,17 +175,21 @@ elif (Decision == '2'):
     
 # If value entered for decision is 3 then the following prompt is returned
 elif (Decision == '3'):
+
+    # Prompts user to enter 4 accuracy thresholds
     threshold1 = int(input("Enter the Desired Accuracy Threshold 1 (0-100): "))
     threshold2 = int(input("Enter the Desired Accuracy Threshold 2 (0-100): "))
     threshold3 = int(input("Enter the Desired Accuracy Threshold 3 (0-100): "))
     threshold4 = int(input("Enter the Desired Accuracy Threshold 4 (0-100): "))
 
+    # Creates empty arrays for each
     x = []
     y1 = []
     y2 = []
     y3 = []
     y4 = []
 
+    # Calculates innaccuracy thresholds 
     inaccThreshold1 = 100 - threshold1
     inaccThreshold2 = 100 - threshold2
     inaccThreshold3 = 100 - threshold3
@@ -187,14 +198,17 @@ elif (Decision == '3'):
     upperBound = 100
     lowerBound = 0
 
+    # Sorts innacuracy thresholds
     inaccThresholdlist = [inaccThreshold1, inaccThreshold2, inaccThreshold3, inaccThreshold4]
     list.sort(inaccThresholdlist)
 
+    # Sets bounds for entire innacuracy threshold
     if inaccThresholdlist[0] - 15 > 0:
         lowerBound = inaccThresholdlist[0] - 15
     if inaccThresholdlist[2] + 16 < 100:
         upperBound = inaccThresholdlist[3] + 16
-        
+
+    # Calculates the number of correct preamble locations for each noise level at each accuracy threshold
     for noise in range(lowerBound, upperBound):
         x.append(noise)
         numCorrect1 = 0
@@ -204,8 +218,8 @@ elif (Decision == '3'):
 
         for i in range(1000):
             newBits, index = preInsert(bitstream, bitstreamLen, preamble)   # Places the preamble in the bitstream
-            newBits = bitFlip(newBits, len(newBits), noise)
-            expected = newBits[(index + preLength):]
+            newBits = bitFlip(newBits, len(newBits), noise) # Flips Bits
+            expected = newBits[(index + preLength):] # Finds expected location of preamble
             if(findData(newBits, preamble, inaccThresholdlist[0], expected) == 1):
                 numCorrect1 += 1
             if(findData(newBits, preamble, inaccThresholdlist[1], expected) == 1):
@@ -215,6 +229,7 @@ elif (Decision == '3'):
             if(findData(newBits, preamble, inaccThresholdlist[3], expected) == 1):
                 numCorrect4 += 1
 
+        # Creates and prints each number of correct declarations
         y1.append(numCorrect1)
         y2.append(numCorrect2)
         y3.append(numCorrect3)
@@ -228,7 +243,7 @@ elif (Decision == '3'):
         print("Num Correct 4:")
         print(numCorrect4)
         
-
+    # Prints all data 
     plt.plot(x, y1)
     plt.plot(x, y2)
     plt.plot(x, y3)
@@ -240,12 +255,15 @@ elif (Decision == '3'):
     plt.show()
 
 elif (Decision == '4'):
-    Percent = int(input('Enter Desired Percentage of Bits Flipped (0 - 100): '))
+    Percent = int(input('Enter Desired Percentage of Bits Flipped (0 - 100): ')) # Prompts user to enter percentage of bits flipped
+    
+    # Creates empty arrays for each preamble searching outcome
     x = []
     fnegy = []
     fposy = []
     numCy = []
 
+    # Cycles through accuracy threshold range 60 to 100 to find number of false positives, false negatives, and correct preamble location
     for threshold in range(60, 100):
         x.append(threshold)
         fpos = 0
@@ -253,8 +271,8 @@ elif (Decision == '4'):
         numCorrect = 0 
         for i in range (250):
             newBits, index = preInsert(bitstream, bitstreamLen, preamble)   # Places the preamble in the bitstream
-            newBits = bitFlip(newBits, len(newBits), Percent)
-            expected = newBits[(index + preLength):]
+            newBits = bitFlip(newBits, len(newBits), Percent) # Flips Bits
+            expected = newBits[(index + preLength):] # Finds expected location of preamble
             returnVal = findData(newBits, preamble, 100 - threshold, expected)
             if(returnVal == 2):
                 fpos += 1
@@ -265,11 +283,13 @@ elif (Decision == '4'):
             else:
                 numCorrect = numCorrect
     
+        # Appends data
         numCy.append(numCorrect)
         fposy.append(fpos)
         fnegy.append(fneg)
         print("Num Correct:" + str(numCorrect) + "\nNum False Pos:" + str(fpos) + "\nNum False neg:" + str(fneg))
-        
+
+    # Plots data   
     plt.plot(x, numCy)
     plt.plot(x, fposy)
     plt.plot(x, fnegy)
